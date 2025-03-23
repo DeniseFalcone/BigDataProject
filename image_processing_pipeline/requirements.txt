@@ -1,3 +1,5 @@
-watchdog
+#watchdog
+pyinotify
 kafka-python
 pymongo
+pillow

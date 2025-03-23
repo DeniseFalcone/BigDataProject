@@ -163,8 +163,16 @@ services:
       mongo:
           condition: service_started
     environment:
-      KAFKA_BROKER: broker:29092
-      MONGO_DB: mongodb://root:example@mongo:27017/
+      KAFKA_URL: 'broker:29092'
+      KAFKA_TOPIC: metadata_topic
+      WATCH_FOLDER: /image_processing_pipeline/data/imageserver
+      DATA_FOLDER: /image_processing_pipeline/data/dataset
+      MONGO_URI: mongodb://root:example@mongo:27017/
+      MONGO_DB : prova_db
+      MONGO_METADATA_COLLECTION : images_metadata
+      MONGO_PROCESSED_COLLECTION : processing_results
+    volumes:
+      - ./data:/image_processing_pipeline/data
     networks:
       - shared_network
       - processing_network
