@@ -1,0 +1,24 @@
+services: 
+  
+  streamlit:
+    image: streamlit_image
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8501:8501
+    volumes:
+      - streamlit:/web_app/streamlit
+      - ./data:/image_processing_pipeline/data
+    #command: streamlit run /app/app.py
+    networks:
+      - shared_network
+
+  #web_app:
+
+networks:
+  shared_network:
+    external: true
+
+volumes:
+  streamlit:

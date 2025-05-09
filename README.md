@@ -16,7 +16,7 @@ image_processing_pipeline = file per prendere dati in real time, processarli, ap
   |--> ingestion = file per prendere dati dalla cartella e darli a kafka
   |--> processing = files per processare i dati tramite diversi workers
   |--> db = files per il db e lo storage dei dati
-.env = salva variabili d'ambiente || config.py (non so usare .env)
+.env = salva variabili d'ambiente
 .gitignore = files da ignorare
 fake_realtime_stream.py = script per far finta di avere dati in realtime
 README.md = questo file: spiega come importare ed usare il progetto
@@ -26,3 +26,7 @@ docker-compose.yaml
     - mongo-express: ui for mongodb
     - rest-proxy: rest api kafka interactions, check if needed
     - ui (Kafka UI): ui for kafka 
+
+TODO:
+- consumer per processing (prende filepaths da file.txt in /data, li passa a yolo e salva i risultati su un'altra collection in mongodb)
+- cartella data deve essere accessibile da web_app
