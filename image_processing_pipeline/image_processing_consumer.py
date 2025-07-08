@@ -4,9 +4,7 @@ import logging
 import multiprocessing
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 from kafka import KafkaConsumer
-import keras
 import utils.file_func as file_func
-import utils.data_preprocessing as data_preprocessing
 
 # Load environment variables
 # Kafka variables
@@ -41,8 +39,6 @@ class ImageProcessingConsumer(multiprocessing.Process):
             enable_auto_commit=True
         )
         logging.info(f"Connected to Kafka: {KAFKA_URL}, Topic: {KAFKA_TOPIC}")
-        self.prediction_model = keras.models.load_model("model/binary_classification_model_0505.keras")
-        logging.info("Model loaded successfully")
         self.stop_event = multiprocessing.Event()
 
     def stop(self):
@@ -50,6 +46,12 @@ class ImageProcessingConsumer(multiprocessing.Process):
 
     def run(self):
         try: 
+            import tensorflow as tf 
+            import utils.data_preprocessing as data_preprocessing 
+
+            logging.info("Consumer process started — loading model")
+            self.prediction_model = tf.keras.models.load_model('model/binary_classification_model_0505.keras')
+            logging.info("Model loaded successfully")
             for message in self.consumer:
                 file_path = message.value.get("file_path")
                 dest_path = os.path.join(PROCESSED_FOLDER, os.path.basename(file_path))
