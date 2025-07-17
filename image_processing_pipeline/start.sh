@@ -2,6 +2,7 @@
 
 # Start processing main in the foreground
 python3 ./main.py
+#python3 ./prova.py
 
 # Wait for background process to finish
 wait

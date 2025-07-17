@@ -3,7 +3,7 @@ services:
   streamlit:
     image: streamlit_image
     build: 
-      context: .
+      context: ./web_app
       dockerfile: Dockerfile
     ports:
       - 8501:8501
@@ -11,6 +11,12 @@ services:
       - streamlit:/web_app/streamlit
       - ./data:/image_processing_pipeline/data
     #command: streamlit run /app/app.py
+    environment:
+      PROCESSED_FOLDER: /data/processed_images
+      TO_PROCESS_FOLDER: /data/to_process_images
+      MONGO_URL: mongodb://root:example@mongo:27017/
+      MONGO_DB : prova_db
+      MONGO_METADATA_COLLECTION : images_metadata
     networks:
       - shared_network
 

@@ -170,9 +170,8 @@ services:
       PROCESSED_FOLDER: /data/processed_images
       TO_PROCESS_FOLDER: /data/to_process_images
       MONGO_URL: mongodb://root:example@mongo:27017/
-      MONGO_DB : prova_db
-      MONGO_METADATA_COLLECTION : images_metadata
-      MONGO_PROCESSED_COLLECTION : processing_results
+      MONGO_DB: prova_db
+      MONGO_METADATA_COLLECTION: images_metadata
     volumes:
       - ./data:/data
     networks:

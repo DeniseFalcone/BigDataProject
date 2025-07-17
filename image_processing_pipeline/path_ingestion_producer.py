@@ -39,11 +39,11 @@ class NewImagePathProducer(threading.Thread):
                 logging.info("No new files found.")
                 time.sleep(10)
                 continue
-            logging.info(f"Current files: {new_files}")
+            #logging.info(f"Current files: {new_files}")
             for file in new_files:
                 self.send_file_path(file)
-            # wait 5 seconds before checking for new files again
-            time.sleep(5) 
+            # wait 10 seconds before checking for new files again
+            time.sleep(10) 
 
     def new_file_exists(self):
         all_files = set(os.listdir(FOLDER_TO_WATCH))
@@ -58,7 +58,7 @@ class NewImagePathProducer(threading.Thread):
             file_path = os.path.join(TO_PROCESS_FOLDER, file)
             message = {"file_path": file_path} 
             self.producer.send(KAFKA_TOPIC, message)
-            logging.info(f"Sent path to Kafka: {message}")
+            #logging.info(f"Sent path to Kafka: {message}")
         except Exception as e:
             logging.warning(f"Error processing {file_path}: {e}")
     
