@@ -9,8 +9,6 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-    networks:
-      - processing_network
 
   broker:
     image: confluentinc/cp-kafka:7.5.0
@@ -42,8 +40,6 @@ services:
       timeout: 10s
     volumes:
       - "broker-kafka-data:/var/lib/kafka"
-    networks:
-      - processing_network
 
   schema-registry:
     image: confluentinc/cp-schema-registry:7.5.0
@@ -57,8 +53,6 @@ services:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
-    networks:
-      - processing_network
 
   connect:
     image: cnfldemos/kafka-connect-datagen:0.6.2-7.5.0
@@ -90,8 +84,6 @@ services:
       - "$PWD/connect-kafka-temp:/tmp/temp"
     extra_hosts:
       - "mqtt-broker:192.168.205.8"
-    networks:
-      - processing_network
   
   rest-proxy:
     image: confluentinc/cp-kafka-rest:7.5.0
@@ -107,8 +99,6 @@ services:
       KAFKA_REST_BOOTSTRAP_SERVERS: 'broker:29092'
       KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
       KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
-    networks:
-      - processing_network
 
   kafka-ui:
     image: provectuslabs/kafka-ui
@@ -122,8 +112,6 @@ services:
       - KAFKA_CLUSTERS_0_NAME=broker
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=broker:29092
       - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
-    networks:
-      - processing_network
   mongo:
     image: mongo
     restart: always
@@ -132,9 +120,6 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
       - mongo-db-volume:/data/db
-    networks:
-      - shared_network
-      - processing_network
 
   mongo-express:
     image: mongo-express
@@ -146,10 +131,6 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
       ME_CONFIG_BASICAUTH: false
-    networks:
-      - shared_network
-      - processing_network
-
 
   image-processing-service:
     image: image-processing-service
@@ -174,18 +155,31 @@ services:
       MONGO_METADATA_COLLECTION: images_metadata
     volumes:
       - ./data:/data
-    networks:
-      - shared_network
-      - processing_network
 
-networks:
-  shared_network:
-    external: true
-  processing_network:
-    driver: bridge
+  streamlit:
+    image: streamlit_image
+    build: 
+      context: ./web_app
+      dockerfile: Dockerfile
+    ports:
+      - 8501:8501
+    volumes:
+      - streamlit:/web_app/streamlit
+      - ./data:/data
+    #command: streamlit run /app/app.py
+    environment:
+      PROCESSED_FOLDER: /data/processed_images
+      TO_PROCESS_FOLDER: /data/to_process_images
+      MONGO_URL: mongodb://root:example@mongo:27017/
+      MONGO_DB : prova_db
+      MONGO_METADATA_COLLECTION : images_metadata
+    
 
 volumes:
   broker-kafka-data:
     driver: local
   mongo-db-volume:
+    driver: local
+  streamlit:
+    driver: local
 

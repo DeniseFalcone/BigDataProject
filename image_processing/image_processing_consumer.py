@@ -78,8 +78,6 @@ class ImageProcessingConsumer(multiprocessing.Process):
             "prediction_score": prediction,
             "timestamp": timestamp
         }    
-  
-        
 
     def stop(self):
         self.stop_event.set()

@@ -15,7 +15,7 @@ DATASET_FOLDER = os.path.realpath(DATASET_FOLDER)
 def copy_to_watch_folder(file_path):
         try:
             shutil.copy(file_path, FOLDER_TO_WATCH)
-            logging.info(f"Copied {os.path.basename(file_path)} in {FOLDER_TO_WATCH}")
+            #logging.info(f"Copied {os.path.basename(file_path)} in {FOLDER_TO_WATCH}")
         except Exception as e:
             logging.error(f"Error copying {file_path}: {e}")
 
@@ -28,7 +28,7 @@ def move_file(src_path=None, dest_path=None):
         return
     try:
         shutil.move(src_path, dest_path)
-        logging.info(f"Moved file in {FOLDER_TO_WATCH}")
+        #logging.info(f"Moved file in {FOLDER_TO_WATCH}")
     except Exception as e:
         logging.error(f"Error moving file: {e}")
 
