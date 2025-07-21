@@ -3,13 +3,13 @@ import shutil
 import logging
 
 # Load environment variables
+
 # Folder to watch for new files
 FOLDER_TO_WATCH = os.getenv("FOLDER_TO_WATCH")
-#FOLDER_TO_WATCH = "data\imageserver"
 FOLDER_TO_WATCH = os.path.realpath(FOLDER_TO_WATCH)
+
 # Folder containing the dataset to copy in WATCH_FOLDER
 DATASET_FOLDER = os.getenv("DATASET_FOLDER")
-#DATASET_FOLDER = "data\dataset"
 DATASET_FOLDER = os.path.realpath(DATASET_FOLDER)
 
 def copy_to_watch_folder(file_path):

@@ -13,10 +13,11 @@ def main():
     for t in tasks:
         t.start()
 
-    time.sleep(10)  # Let the threads run
+    # Wait for all tasks to complete
+    time.sleep(10) 
 
     for t in tasks:
-        t.join()  # Ensure threads complete execution
+        t.join()  
         
         
 if __name__ == "__main__":

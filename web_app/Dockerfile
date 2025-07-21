@@ -1,6 +1,6 @@
 FROM python:3.10-slim
 
-# Set the working directory in the container
+# Set the working directory
 WORKDIR /web_app
 
 COPY . .

@@ -1,11 +1,11 @@
 import streamlit as st
+from streamlit_autorefresh import st_autorefresh
 import os
 from pymongo import MongoClient
 from PIL import Image
-from streamlit_autorefresh import st_autorefresh
 from datetime import datetime
 
-# CONFIG
+# ENVIRONMENT VARIABLES
 PROCESSED_FOLDER = os.getenv("PROCESSED_FOLDER")
 PROCESSED_FOLDER = os.path.realpath(PROCESSED_FOLDER)
 MONGO_URL = os.getenv("MONGO_URL")
@@ -15,7 +15,9 @@ REFRESH_INTERVAL = 10
 
 # MONGO CONNECTION
 class MongoDBConnection:
+
     def __init__(self):
+        
         self.client = MongoClient(MONGO_URL)
         self.db = self.client[MONGO_DB]
         self.collection = self.db[MONGO_COLLECTION]
@@ -31,7 +33,8 @@ class MongoDBConnection:
         return self.collection
 
 
-# CSS
+# Style for the Streamlit app with custom CSS
+
 st.markdown("""
 <style>
 .meta-block {
@@ -47,16 +50,10 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# AUTORELOAD
-st_autorefresh(interval=REFRESH_INTERVAL * 1000, key="auto-refresh")
+# Initialize MongoDB connection and fetch metadata
 
-# TITLE
-st.title("📊 Data Processing Results")
-
-# INIT
 mongo_conn = MongoDBConnection()
 docs = mongo_conn.get_images_metadata()
-
     
 def on_click_func(doc):
     mongo_conn.get_hidden_collection().insert_one(doc)
@@ -64,6 +61,12 @@ def on_click_func(doc):
     st.session_state.hidden_ids.add(doc_id)
     st.rerun()
 
+# Streamlit web app configuration
+
+st_autorefresh(interval=REFRESH_INTERVAL * 1000, key="auto-refresh")
+
+st.title("Images Classification Results")
+st.text("Here the results of the image classification process are shown. To confirm that the image was processed, click on the 'Processed' button.")
 
 if "hidden_ids" not in st.session_state:
     st.session_state.hidden_ids = set()
@@ -91,7 +94,6 @@ else:
             st.markdown('<div class="card-container">', unsafe_allow_html=True)
             col1, col2, col3 = st.columns([1.2, 3, 1])
 
-            # col1 immagine
             with col1:
                 if os.path.exists(image_path):
                     image = Image.open(image_path)
@@ -100,7 +102,6 @@ else:
                 else:
                     st.warning("Image not found.")
 
-            # col2 metadati
             with col2:
                 st.markdown(f"### {file_name}")
                 if os.path.exists(image_path):
@@ -118,8 +119,6 @@ else:
                     </div>
                 """, unsafe_allow_html=True)
 
-
-            # col3 pulsante
             with col3:
                 st.text("")
                 st.text("")
@@ -130,7 +129,6 @@ else:
                     on_click_func(doc)
                 st.markdown('</div>', unsafe_allow_html=True)
                 
-
             st.markdown('<hr style="border: 2px solid #000000; margin: 30px 0;">', unsafe_allow_html=True)
 
             st.markdown('</div>', unsafe_allow_html=True)
