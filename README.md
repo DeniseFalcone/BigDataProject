@@ -198,11 +198,10 @@ To increase the degree of parallelism, follow these steps:
 <!-- Result Preview -->
 ## Result Preview
 
-Example of the processed output displayed in the web interface:
+Example of the processed output displayed in the web interface. 
+The images are updated each time a new one is processed. By clicking on an image, it can be enlarged, and by clicking the "Processed" button, the image can be hidden.
 
 ![Demo](assets/demo.gif)
-
-The images are updated each time a new one is processed. By clicking on an image, it can be enlarged, and by clicking the "Processed" button, the image can be hidden.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
