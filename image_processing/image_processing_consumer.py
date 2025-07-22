@@ -105,6 +105,7 @@ class ImageProcessingConsumer(multiprocessing.Process):
 
             for message in self.consumer:
                 file_path = message.value.get("file_path")
+                logging.info(f"[PID {os.getpid()}] Processing image {file_path}")
                 dest_path = os.path.join(PROCESSED_FOLDER, os.path.basename(file_path))
                 try: 
                     self.collection.insert_one(self.create_json(src_path=file_path, dst_path=dest_path, timestamp=message.timestamp))

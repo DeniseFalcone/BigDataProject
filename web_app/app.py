@@ -1,9 +1,12 @@
 import streamlit as st
 from streamlit_autorefresh import st_autorefresh
+import streamlit.components.v1 as components
 import os
 from pymongo import MongoClient
-from PIL import Image
 from datetime import datetime
+from PIL import Image
+from io import BytesIO
+import base64
 
 # ENVIRONMENT VARIABLES
 PROCESSED_FOLDER = os.getenv("PROCESSED_FOLDER")
@@ -24,7 +27,7 @@ class MongoDBConnection:
         self.hidden_collection = self.db.get_collection("hidden_metadata")
 
     def get_images_metadata(self):
-        return list(self.collection.find({}))
+        return list(self.collection.find({}).sort("timestamp", -1))
 
     def get_hidden_collection(self):
         return self.hidden_collection
@@ -33,7 +36,7 @@ class MongoDBConnection:
         return self.collection
 
 
-# Style for the Streamlit app with custom CSS
+# Utility functions
 
 st.markdown("""
 <style>
@@ -50,7 +53,10 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Initialize MongoDB connection and fetch metadata
+def pil_to_base64(img):
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+    return base64.b64encode(buffer.getvalue()).decode()
 
 mongo_conn = MongoDBConnection()
 docs = mongo_conn.get_images_metadata()
@@ -96,9 +102,47 @@ else:
 
             with col1:
                 if os.path.exists(image_path):
+
                     image = Image.open(image_path)
+                    img_base64 = pil_to_base64(image)
                     st.text("")
-                    st.image(image, width=300)
+
+                    components.html(f"""
+                    <style>
+                    .custom-img {{
+                        width: 90%;
+                        cursor: zoom-in;
+                        border-radius: 0.5rem;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                        transition: all 0.3s ease;
+                    }}
+                    .custom-img:fullscreen {{
+                        width: 100vw;
+                        height: 100vh;
+                        object-fit: contain;
+                        cursor: zoom-out;
+                        background-color: black;
+                    }}
+                    </style>
+
+                    <div style="text-align: center; margin-bottom: 10px;">
+                    <img id="img-{doc_id}" class="custom-img"
+                        src="data:image/png;base64,{img_base64}"
+                        onclick="toggleFullscreen('{doc_id}')" />
+                    </div>
+
+                    <script>
+                    function toggleFullscreen(id) {{
+                        const img = document.getElementById("img-" + id);
+                        if (!document.fullscreenElement) {{
+                            img.requestFullscreen();
+                        }} else {{
+                            document.exitFullscreen();
+                        }}
+                    }}
+                    </script>
+                    """)
+
                 else:
                     st.warning("Image not found.")
 

@@ -7,6 +7,7 @@ def main():
     tasks = [
         RealTimeDataSimulator(),
         NewImagePathProducer(),
+        ImageProcessingConsumer(),
         ImageProcessingConsumer()
     ]
 
